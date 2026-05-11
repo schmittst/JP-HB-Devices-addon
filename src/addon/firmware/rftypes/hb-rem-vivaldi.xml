@@ -95,13 +95,10 @@
     </channel>
 
     <!-- Channel 3: Power-Status-LED (Blink-Detekt = AUS, dauerhaft an = EIN) -->
+    <!-- link_roles + LINK-Paramset bewusst leer: Firmware-PeerCount=0, kein Peering möglich.
+         Status-Events gehen nur an Master, CCU-Programme reagieren darauf. -->
     <channel autoregister="true" index="3" type="SHUTTER_CONTACT" count="1" aes_default="false">
-      <link_roles>
-        <source name="SWITCH"/>
-        <source name="KEYMATIC"/>
-        <source name="WINMATIC"/>
-        <source name="WINDOW_SWITCH_RECEIVER"/>
-      </link_roles>
+      <link_roles></link_roles>
       <paramset type="MASTER" id="sc_ch_master_3">
         <parameter id="MSG_FOR_POS_A">
           <logical type="option">
@@ -137,27 +134,13 @@
       <paramset type="VALUES" id="sc_ch_values_3">
         <subset ref="contact_valueset"/>
       </paramset>
-      <paramset type="LINK" id="sc_ch_link_3">
-        <parameter id="PEER_NEEDS_BURST">
-          <logical type="boolean" default="false"/>
-          <physical type="integer" interface="config" list="4" index="1.0" size="0.1"/>
-        </parameter>
-        <parameter id="EXPECT_AES">
-          <logical type="boolean" default="false"/>
-          <physical type="integer" interface="config" list="4" index="1.7" size="0.1"/>
-        </parameter>
-        <enforce id="EXPECT_AES" value="$PEER.AES"/>
-      </paramset>
+      <paramset type="LINK" id="sc_ch_link_3"></paramset>
     </channel>
 
     <!-- Channel 4: Boiler-Status-LED (direkt: LED an = Boiler an) -->
+    <!-- Peering analog zu Channel 3 deaktiviert -->
     <channel autoregister="true" index="4" type="SHUTTER_CONTACT" count="1" aes_default="false">
-      <link_roles>
-        <source name="SWITCH"/>
-        <source name="KEYMATIC"/>
-        <source name="WINMATIC"/>
-        <source name="WINDOW_SWITCH_RECEIVER"/>
-      </link_roles>
+      <link_roles></link_roles>
       <paramset type="MASTER" id="sc_ch_master_4">
         <parameter id="MSG_FOR_POS_A">
           <logical type="option">
@@ -193,17 +176,7 @@
       <paramset type="VALUES" id="sc_ch_values_4">
         <subset ref="contact_valueset"/>
       </paramset>
-      <paramset type="LINK" id="sc_ch_link_4">
-        <parameter id="PEER_NEEDS_BURST">
-          <logical type="boolean" default="false"/>
-          <physical type="integer" interface="config" list="4" index="1.0" size="0.1"/>
-        </parameter>
-        <parameter id="EXPECT_AES">
-          <logical type="boolean" default="false"/>
-          <physical type="integer" interface="config" list="4" index="1.7" size="0.1"/>
-        </parameter>
-        <enforce id="EXPECT_AES" value="$PEER.AES"/>
-      </paramset>
+      <paramset type="LINK" id="sc_ch_link_4"></paramset>
     </channel>
   </channels>
 
