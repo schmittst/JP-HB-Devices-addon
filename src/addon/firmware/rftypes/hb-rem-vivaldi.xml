@@ -92,9 +92,6 @@
       <parameter type="integer" index="12.0" size="2.0" const_value="0"/>
       <parameter type="integer" index="14.0" size="2.0" PARAM="ON_TIME" omit_if="0"/>
     </frame>
-    <frame id="SET_LOCK" direction="to_device" type="0x11" channel_field="10">
-      <parameter type="integer" index="9.0" size="0.1" param="INHIBIT"/>
-    </frame>
     <frame id="LEVEL_GET" direction="to_device" type="0x01" channel_field="9">
       <parameter type="integer" index="10.0" size="1.0" const_value="14"/>
     </frame>
@@ -138,12 +135,6 @@
         <conversion type="float_integer_scale" factor="10"/>
         <conversion type="integer_tinyfloat" mantissa_start="5" mantissa_size="11" exponent_start="0" exponent_size="5"/>
       </parameter>
-      <parameter id="INHIBIT" operations="read,write,event" control="NONE" loopback="true">
-        <logical type="boolean"/>
-        <physical type="integer" interface="command" value_id="INHIBIT">
-          <set request="SET_LOCK"/>
-        </physical>
-      </parameter>
       <parameter id="WORKING" operations="read,event" ui_flags="internal">
         <logical type="boolean" default="false"/>
         <physical type="integer" interface="command" value_id="STATE_FLAGS">
@@ -167,13 +158,6 @@
       <parameter id="AES_ACTIVE" ui_flags="internal">
         <logical type="boolean" default="false"/>
         <physical type="boolean" interface="internal" value_id="AES"/>
-      </parameter>
-      <parameter id="POWERUP_ACTION" operations="read,write">
-        <logical type="option">
-          <option id="POWERUP_OFF" default="true"/>
-          <option id="POWERUP_ON"/>
-        </logical>
-        <physical type="integer" interface="config" list="1" index="86" size="0.1"/>
       </parameter>
       <parameter id="STATUSINFO_MINDELAY" operations="read,write">
         <logical type="float" min="0.5" max="15.5" default="2.0" unit="s">
