@@ -111,7 +111,6 @@
       <parameter type="integer" index="10.0" size="1.0" const_value="0"/>
       <parameter type="integer" const_value="0" param="STATE"/>
       <parameter type="integer" const_value="0" param="STATE_FLAGS"/>
-      <parameter type="integer" const_value="0" param="INHIBIT"/>
     </frame>
   </frames>
 
