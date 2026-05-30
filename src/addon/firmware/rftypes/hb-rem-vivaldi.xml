@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
+<!--
+  HB-REM-VIVALDI — Steven Schmitt's La Spaziale Vivaldi II Espresso-Remote.
+
+  Zwei SWITCH-Channels — einer pro Vivaldi-Funktion (Power + Boiler).
+  Jeder Channel ist im Gerät an einen Taster-Output (PA0/PA1) und an einen
+  LED-Input (PB10/PB11) gekoppelt. STATE spiegelt den realen Maschinen-Zustand
+  (aus der LED gelesen); ein SET vom CCU löst genau einen Taster-Puls aus.
+
+  Peering ist deaktiviert (Firmware: PEERS_PER_CHANNEL=0). Bedienung
+  ausschließlich via CCU-WebUI/Programme. -->
 <device version="1" cyclic_timeout="3600" supports_aes="false">
   <supported_types>
     <type name="HB-REM-VIVALDI" id="HB-REM-VIVALDI" priority="2" updatable="true">
@@ -50,138 +60,33 @@
       </paramset>
     </channel>
 
-    <!-- Channel 1: Power-Taster-Puls (SwitchChannel) -->
+    <!-- Channel 1: Power. STATE = Maschinen-Zustand (aus LED), SET = Taster-Puls.
+         Peering deaktiviert (leere link_roles + LINK), passt zu Firmware PEERS_PER_CHANNEL=0. -->
     <channel index="1" type="SWITCH" count="1">
-      <link_roles>
-        <target name="SWITCH"/>
-        <target name="WEATHER_CS"/>
-        <target name="WCS_TIPTRONIC_SENSOR"/>
-      </link_roles>
+      <link_roles></link_roles>
       <paramset type="MASTER" id="switch_ch_master_1">
         <subset ref="switch_paramset"/>
       </paramset>
       <paramset type="VALUES" id="switch_ch_values_1">
         <subset ref="switch_valueset"/>
       </paramset>
-      <paramset type="LINK" id="switch_ch_link_1">
-        <subset ref="switch_linkset"/>
-      </paramset>
-      <enforce_link>
-        <value id="LCD_SYMBOL" value="2"/>
-        <value id="LCD_LEVEL_INTERP" value="1"/>
-      </enforce_link>
+      <paramset type="LINK" id="switch_ch_link_1"></paramset>
     </channel>
 
-    <!-- Channel 2: Boiler-Taster-Puls (SwitchChannel) -->
+    <!-- Channel 2: Boiler. Selbes Schema wie Channel 1. -->
     <channel index="2" type="SWITCH" count="1">
-      <link_roles>
-        <target name="SWITCH"/>
-        <target name="WEATHER_CS"/>
-        <target name="WCS_TIPTRONIC_SENSOR"/>
-      </link_roles>
+      <link_roles></link_roles>
       <paramset type="MASTER" id="switch_ch_master_2">
         <subset ref="switch_paramset"/>
       </paramset>
       <paramset type="VALUES" id="switch_ch_values_2">
         <subset ref="switch_valueset"/>
       </paramset>
-      <paramset type="LINK" id="switch_ch_link_2">
-        <subset ref="switch_linkset"/>
-      </paramset>
-      <enforce_link>
-        <value id="LCD_SYMBOL" value="2"/>
-        <value id="LCD_LEVEL_INTERP" value="1"/>
-      </enforce_link>
-    </channel>
-
-    <!-- Channel 3: Power-Status-LED (Blink-Detekt = AUS, dauerhaft an = EIN) -->
-    <!-- link_roles + LINK-Paramset bewusst leer: Firmware-PeerCount=0, kein Peering möglich.
-         Status-Events gehen nur an Master, CCU-Programme reagieren darauf. -->
-    <channel autoregister="true" index="3" type="SHUTTER_CONTACT" count="1" aes_default="false">
-      <link_roles></link_roles>
-      <paramset type="MASTER" id="sc_ch_master_3">
-        <parameter id="MSG_FOR_POS_A">
-          <logical type="option">
-            <option id="NO_MSG"/>
-            <option id="CLOSED" default="true"/>
-            <option id="OPEN"/>
-          </logical>
-          <physical type="integer" interface="config" list="1" index="32.6" size="0.2"/>
-        </parameter>
-        <parameter id="MSG_FOR_POS_B">
-          <logical type="option">
-            <option id="NO_MSG"/>
-            <option id="CLOSED"/>
-            <option id="OPEN" default="true"/>
-          </logical>
-          <physical type="integer" interface="config" list="1" index="32.4" size="0.2"/>
-        </parameter>
-        <parameter id="AES_ACTIVE" ui_flags="internal">
-          <logical type="boolean" default="false"/>
-          <physical type="boolean" interface="internal" value_id="AES"/>
-        </parameter>
-        <parameter id="EVENT_DELAYTIME">
-          <logical type="float" min="0.0" max="7620.0" unit="s" default="0.0"/>
-          <physical type="integer" interface="config" list="1" index="33" size="1"/>
-          <conversion type="float_configtime" factors="1,60" value_size="0.7"/>
-        </parameter>
-        <parameter id="LED_ONTIME">
-          <logical type="float" min="0.0" max="1.275" unit="s" default="0.5"/>
-          <physical type="integer" interface="config" list="1" index="34" size="1"/>
-          <conversion type="float_integer_scale" factor="200"/>
-        </parameter>
-      </paramset>
-      <paramset type="VALUES" id="sc_ch_values_3">
-        <subset ref="contact_valueset"/>
-      </paramset>
-      <paramset type="LINK" id="sc_ch_link_3"></paramset>
-    </channel>
-
-    <!-- Channel 4: Boiler-Status-LED (direkt: LED an = Boiler an) -->
-    <!-- Peering analog zu Channel 3 deaktiviert -->
-    <channel autoregister="true" index="4" type="SHUTTER_CONTACT" count="1" aes_default="false">
-      <link_roles></link_roles>
-      <paramset type="MASTER" id="sc_ch_master_4">
-        <parameter id="MSG_FOR_POS_A">
-          <logical type="option">
-            <option id="NO_MSG"/>
-            <option id="CLOSED" default="true"/>
-            <option id="OPEN"/>
-          </logical>
-          <physical type="integer" interface="config" list="1" index="32.6" size="0.2"/>
-        </parameter>
-        <parameter id="MSG_FOR_POS_B">
-          <logical type="option">
-            <option id="NO_MSG"/>
-            <option id="CLOSED"/>
-            <option id="OPEN" default="true"/>
-          </logical>
-          <physical type="integer" interface="config" list="1" index="32.4" size="0.2"/>
-        </parameter>
-        <parameter id="AES_ACTIVE" ui_flags="internal">
-          <logical type="boolean" default="false"/>
-          <physical type="boolean" interface="internal" value_id="AES"/>
-        </parameter>
-        <parameter id="EVENT_DELAYTIME">
-          <logical type="float" min="0.0" max="7620.0" unit="s" default="0.0"/>
-          <physical type="integer" interface="config" list="1" index="33" size="1"/>
-          <conversion type="float_configtime" factors="1,60" value_size="0.7"/>
-        </parameter>
-        <parameter id="LED_ONTIME">
-          <logical type="float" min="0.0" max="1.275" unit="s" default="0.5"/>
-          <physical type="integer" interface="config" list="1" index="34" size="1"/>
-          <conversion type="float_integer_scale" factor="200"/>
-        </parameter>
-      </paramset>
-      <paramset type="VALUES" id="sc_ch_values_4">
-        <subset ref="contact_valueset"/>
-      </paramset>
-      <paramset type="LINK" id="sc_ch_link_4"></paramset>
+      <paramset type="LINK" id="switch_ch_link_2"></paramset>
     </channel>
   </channels>
 
   <frames>
-    <!-- SWITCH frames (für Channels 1, 2) -->
     <frame id="LEVEL_SET" direction="to_device" type="0x11" subtype="0x02" subtype_index="9" channel_field="10">
       <parameter type="integer" index="11.0" size="1.0" param="STATE"/>
       <parameter type="integer" index="12.0" size="2.0" const_value="0"/>
@@ -211,41 +116,9 @@
       <parameter type="integer" const_value="0" param="STATE_FLAGS"/>
       <parameter type="integer" const_value="0" param="INHIBIT"/>
     </frame>
-    <!-- SHUTTER_CONTACT frames (für Channels 3, 4) -->
-    <frame id="EVENT" direction="from_device" allowed_receivers="BROADCAST,CENTRAL,OTHER" event="true" type="0x41" channel_field="9:0.6">
-      <parameter type="integer" index="11.0" size="1.0" param="STATE"/>
-    </frame>
   </frames>
 
   <paramset_defs>
-    <paramset id="contact_valueset">
-      <parameter id="STATE" operations="read,event" control="DOOR_SENSOR.STATE">
-        <logical type="boolean"/>
-        <physical type="integer" interface="command" value_id="STATE">
-          <event frame="EVENT" auth_violate_policy="reject"/>
-          <event frame="INFO_LEVEL" auth_violate_policy="reject"/>
-          <event frame="ACK_STATUS" auth_violate_policy="reject"/>
-        </physical>
-      </parameter>
-      <parameter id="ERROR" operations="read,event" ui_flags="service" control="NONE">
-        <logical type="option">
-          <option id="NO_ERROR" index="0" default="true"/>
-          <option id="SABOTAGE" index="7"/>
-        </logical>
-        <physical type="integer" interface="command" value_id="ERROR">
-          <event frame="INFO_LEVEL"/>
-          <event frame="ACK_STATUS"/>
-        </physical>
-      </parameter>
-      <parameter id="INSTALL_TEST" operations="event" ui_flags="internal">
-        <logical type="action"/>
-        <physical type="integer" interface="command" value_id="INSTALL_TEST_VALUE">
-          <event frame="EVENT"/>
-          <event frame="BROADCAST_EVEN"/>
-        </physical>
-      </parameter>
-    </paramset>
-
     <paramset id="switch_valueset">
       <parameter id="STATE" operations="read,write,event" control="SWITCH.STATE">
         <logical type="boolean" default="false"/>
@@ -314,376 +187,6 @@
         <physical type="integer" interface="config" list="1" index="87.5" size="0.3"/>
         <conversion type="float_integer_scale" factor="1"/>
       </parameter>
-    </paramset>
-
-    <paramset id="switch_linkset">
-      <parameter id="UI_HINT">
-        <logical type="string" default="" use_default_on_failure="true"/>
-        <physical type="string" interface="store" id="UI_HINT" save_on_change="true"/>
-      </parameter>
-      <parameter id="SHORT_CT_OFFDELAY">
-        <logical type="option">
-          <option id="X GE COND_VALUE_LO" default="true"/>
-          <option id="X GE COND_VALUE_HI"/>
-          <option id="X LT COND_VALUE_LO"/>
-          <option id="X LT COND_VALUE_HI"/>
-          <option id="COND_VALUE_LO LE X LT COND_VALUE_HI"/>
-          <option id="X LT COND_VALUE_LO OR X GE COND_VALUE_HI"/>
-        </logical>
-        <physical type="integer" interface="config" list="3" index="0x2.4" size="0.4"/>
-      </parameter>
-      <parameter id="SHORT_CT_ONDELAY">
-        <logical type="option">
-          <option id="X GE COND_VALUE_LO" default="true"/>
-          <option id="X GE COND_VALUE_HI"/>
-          <option id="X LT COND_VALUE_LO"/>
-          <option id="X LT COND_VALUE_HI"/>
-          <option id="COND_VALUE_LO LE X LT COND_VALUE_HI"/>
-          <option id="X LT COND_VALUE_LO OR X GE COND_VALUE_HI"/>
-        </logical>
-        <physical type="integer" interface="config" list="3" index="0x2.0" size="0.4"/>
-      </parameter>
-      <parameter id="SHORT_CT_OFF">
-        <logical type="option">
-          <option id="X GE COND_VALUE_LO" default="true"/>
-          <option id="X GE COND_VALUE_HI"/>
-          <option id="X LT COND_VALUE_LO"/>
-          <option id="X LT COND_VALUE_HI"/>
-          <option id="COND_VALUE_LO LE X LT COND_VALUE_HI"/>
-          <option id="X LT COND_VALUE_LO OR X GE COND_VALUE_HI"/>
-        </logical>
-        <physical type="integer" interface="config" list="3" index="0x3.4" size="0.4"/>
-      </parameter>
-      <parameter id="SHORT_CT_ON">
-        <logical type="option">
-          <option id="X GE COND_VALUE_LO" default="true"/>
-          <option id="X GE COND_VALUE_HI"/>
-          <option id="X LT COND_VALUE_LO"/>
-          <option id="X LT COND_VALUE_HI"/>
-          <option id="COND_VALUE_LO LE X LT COND_VALUE_HI"/>
-          <option id="X LT COND_VALUE_LO OR X GE COND_VALUE_HI"/>
-        </logical>
-        <physical type="integer" interface="config" list="3" index="0x3.0" size="0.4"/>
-      </parameter>
-      <parameter id="SHORT_COND_VALUE_LO">
-        <logical type="integer" min="0" max="255" default="50"/>
-        <physical type="integer" interface="config" list="3" index="4" size="1"/>
-      </parameter>
-      <parameter id="SHORT_COND_VALUE_HI">
-        <logical type="integer" min="0" max="255" default="100"/>
-        <physical type="integer" interface="config" list="3" index="5" size="1"/>
-      </parameter>
-      <parameter id="SHORT_ONDELAY_TIME">
-        <logical type="float" min="0.0" max="111600.0" default="0" unit="s"/>
-        <physical type="integer" interface="config" list="3" index="6" size="1"/>
-        <conversion type="float_configtime"/>
-      </parameter>
-      <parameter id="SHORT_ON_TIME">
-        <logical type="float" min="0.0" max="108000.0" default="111600.0" unit="s">
-          <special_value id="NOT_USED" value="111600.0"/>
-        </logical>
-        <physical type="integer" interface="config" list="3" index="7" size="1"/>
-        <conversion type="float_configtime"/>
-      </parameter>
-      <parameter id="SHORT_OFFDELAY_TIME">
-        <logical type="float" min="0.0" max="111600.0" default="0" unit="s"/>
-        <physical type="integer" interface="config" list="3" index="8" size="1"/>
-        <conversion type="float_configtime"/>
-      </parameter>
-      <parameter id="SHORT_OFF_TIME">
-        <logical type="float" min="0.0" max="108000.0" default="111600.0" unit="s">
-          <special_value id="NOT_USED" value="111600.0"/>
-        </logical>
-        <physical type="integer" interface="config" list="3" index="9" size="1"/>
-        <conversion type="float_configtime"/>
-      </parameter>
-      <parameter id="SHORT_ON_TIME_MODE">
-        <logical type="option">
-          <option id="ABSOLUTE" default="true"/>
-          <option id="MINIMAL"/>
-        </logical>
-        <physical type="integer" interface="config" list="3" index="0xA.7" size="0.1"/>
-      </parameter>
-      <parameter id="SHORT_OFF_TIME_MODE">
-        <logical type="option">
-          <option id="ABSOLUTE" default="true"/>
-          <option id="MINIMAL"/>
-        </logical>
-        <physical type="integer" interface="config" list="3" index="0xA.6" size="0.1"/>
-      </parameter>
-      <parameter id="SHORT_ACTION_TYPE">
-        <logical type="option">
-          <option id="INACTIVE"/>
-          <option id="JUMP_TO_TARGET" default="true"/>
-          <option id="TOGGLE_TO_COUNTER"/>
-          <option id="TOGGLE_INV_TO_COUNTER"/>
-        </logical>
-        <physical type="integer" interface="config" list="3" index="0xA.0" size="0.2"/>
-      </parameter>
-      <parameter id="SHORT_JT_OFF">
-        <logical type="option">
-          <option id="NO_JUMP_IGNORE_COMMAND"/>
-          <option id="ONDELAY"/>
-          <option id="ON"/>
-          <option id="OFFDELAY"/>
-          <option id="OFF" default="true"/>
-        </logical>
-        <physical type="integer" interface="config" list="3" index="0xB.4" size="0x0.4"/>
-        <conversion type="option_integer">
-          <value_map device_value="0x00" parameter_value="0"/>
-          <value_map device_value="0x01" parameter_value="1"/>
-          <value_map device_value="0x03" parameter_value="2"/>
-          <value_map device_value="0x04" parameter_value="3"/>
-          <value_map device_value="0x06" parameter_value="4"/>
-        </conversion>
-      </parameter>
-      <parameter id="SHORT_JT_ON">
-        <logical type="option">
-          <option id="NO_JUMP_IGNORE_COMMAND"/>
-          <option id="ONDELAY"/>
-          <option id="ON"/>
-          <option id="OFFDELAY"/>
-          <option id="OFF" default="true"/>
-        </logical>
-        <physical type="integer" interface="config" list="3" index="0xB.0" size="0x0.4"/>
-        <conversion type="option_integer">
-          <value_map device_value="0x00" parameter_value="0"/>
-          <value_map device_value="0x01" parameter_value="1"/>
-          <value_map device_value="0x03" parameter_value="2"/>
-          <value_map device_value="0x04" parameter_value="3"/>
-          <value_map device_value="0x06" parameter_value="4"/>
-        </conversion>
-      </parameter>
-      <parameter id="SHORT_JT_OFFDELAY">
-        <logical type="option">
-          <option id="NO_JUMP_IGNORE_COMMAND"/>
-          <option id="ONDELAY"/>
-          <option id="ON"/>
-          <option id="OFFDELAY"/>
-          <option id="OFF" default="true"/>
-        </logical>
-        <physical type="integer" interface="config" list="3" index="0xC.4" size="0x0.4"/>
-        <conversion type="option_integer">
-          <value_map device_value="0x00" parameter_value="0"/>
-          <value_map device_value="0x01" parameter_value="1"/>
-          <value_map device_value="0x03" parameter_value="2"/>
-          <value_map device_value="0x04" parameter_value="3"/>
-          <value_map device_value="0x06" parameter_value="4"/>
-        </conversion>
-      </parameter>
-      <parameter id="SHORT_JT_ONDELAY">
-        <logical type="option">
-          <option id="NO_JUMP_IGNORE_COMMAND"/>
-          <option id="ONDELAY"/>
-          <option id="ON"/>
-          <option id="OFFDELAY"/>
-          <option id="OFF" default="true"/>
-        </logical>
-        <physical type="integer" interface="config" list="3" index="0xC.0" size="0x0.4"/>
-        <conversion type="option_integer">
-          <value_map device_value="0x00" parameter_value="0"/>
-          <value_map device_value="0x01" parameter_value="1"/>
-          <value_map device_value="0x03" parameter_value="2"/>
-          <value_map device_value="0x04" parameter_value="3"/>
-          <value_map device_value="0x06" parameter_value="4"/>
-        </conversion>
-      </parameter>
-      <parameter id="LONG_CT_OFFDELAY">
-        <logical type="option">
-          <option id="X GE COND_VALUE_LO" default="true"/>
-          <option id="X GE COND_VALUE_HI"/>
-          <option id="X LT COND_VALUE_LO"/>
-          <option id="X LT COND_VALUE_HI"/>
-          <option id="COND_VALUE_LO LE X LT COND_VALUE_HI"/>
-          <option id="X LT COND_VALUE_LO OR X GE COND_VALUE_HI"/>
-        </logical>
-        <physical type="integer" interface="config" list="3" index="0x82.4" size="0.4"/>
-      </parameter>
-      <parameter id="LONG_CT_ONDELAY">
-        <logical type="option">
-          <option id="X GE COND_VALUE_LO" default="true"/>
-          <option id="X GE COND_VALUE_HI"/>
-          <option id="X LT COND_VALUE_LO"/>
-          <option id="X LT COND_VALUE_HI"/>
-          <option id="COND_VALUE_LO LE X LT COND_VALUE_HI"/>
-          <option id="X LT COND_VALUE_LO OR X GE COND_VALUE_HI"/>
-        </logical>
-        <physical type="integer" interface="config" list="3" index="0x82.0" size="0.4"/>
-      </parameter>
-      <parameter id="LONG_CT_OFF">
-        <logical type="option">
-          <option id="X GE COND_VALUE_LO" default="true"/>
-          <option id="X GE COND_VALUE_HI"/>
-          <option id="X LT COND_VALUE_LO"/>
-          <option id="X LT COND_VALUE_HI"/>
-          <option id="COND_VALUE_LO LE X LT COND_VALUE_HI"/>
-          <option id="X LT COND_VALUE_LO OR X GE COND_VALUE_HI"/>
-        </logical>
-        <physical type="integer" interface="config" list="3" index="0x83.4" size="0.4"/>
-      </parameter>
-      <parameter id="LONG_CT_ON">
-        <logical type="option">
-          <option id="X GE COND_VALUE_LO" default="true"/>
-          <option id="X GE COND_VALUE_HI"/>
-          <option id="X LT COND_VALUE_LO"/>
-          <option id="X LT COND_VALUE_HI"/>
-          <option id="COND_VALUE_LO LE X LT COND_VALUE_HI"/>
-          <option id="X LT COND_VALUE_LO OR X GE COND_VALUE_HI"/>
-        </logical>
-        <physical type="integer" interface="config" list="3" index="0x83.0" size="0.4"/>
-      </parameter>
-      <parameter id="LONG_COND_VALUE_LO">
-        <logical type="integer" min="0" max="255" default="50"/>
-        <physical type="integer" interface="config" list="3" index="0x84" size="1"/>
-      </parameter>
-      <parameter id="LONG_COND_VALUE_HI">
-        <logical type="integer" min="0" max="255" default="100"/>
-        <physical type="integer" interface="config" list="3" index="0x85" size="1"/>
-      </parameter>
-      <parameter id="LONG_ONDELAY_TIME">
-        <logical type="float" min="0.0" max="111600.0" default="0" unit="s"/>
-        <physical type="integer" interface="config" list="3" index="0x86" size="1"/>
-        <conversion type="float_configtime"/>
-      </parameter>
-      <parameter id="LONG_ON_TIME">
-        <logical type="float" min="0.0" max="108000.0" default="111600.0" unit="s">
-          <special_value id="NOT_USED" value="111600.0"/>
-        </logical>
-        <physical type="integer" interface="config" list="3" index="0x87" size="1"/>
-        <conversion type="float_configtime"/>
-      </parameter>
-      <parameter id="LONG_OFFDELAY_TIME">
-        <logical type="float" min="0.0" max="111600.0" default="0" unit="s"/>
-        <physical type="integer" interface="config" list="3" index="0x88" size="1"/>
-        <conversion type="float_configtime"/>
-      </parameter>
-      <parameter id="LONG_OFF_TIME">
-        <logical type="float" min="0.0" max="108000.0" default="111600.0" unit="s">
-          <special_value id="NOT_USED" value="111600.0"/>
-        </logical>
-        <physical type="integer" interface="config" list="3" index="0x89" size="1"/>
-        <conversion type="float_configtime"/>
-      </parameter>
-      <parameter id="LONG_ON_TIME_MODE">
-        <logical type="option">
-          <option id="ABSOLUTE" default="true"/>
-          <option id="MINIMAL"/>
-        </logical>
-        <physical type="integer" interface="config" list="3" index="0x8A.7" size="0.1"/>
-      </parameter>
-      <parameter id="LONG_OFF_TIME_MODE">
-        <logical type="option">
-          <option id="ABSOLUTE" default="true"/>
-          <option id="MINIMAL"/>
-        </logical>
-        <physical type="integer" interface="config" list="3" index="0x8A.6" size="0.1"/>
-      </parameter>
-      <parameter id="LONG_MULTIEXECUTE">
-        <logical type="option">
-          <option id="OFF"/>
-          <option id="ON" default="true"/>
-        </logical>
-        <physical type="integer" interface="config" list="3" index="0x8A.5" size="0.1"/>
-      </parameter>
-      <parameter id="LONG_ACTION_TYPE">
-        <logical type="option">
-          <option id="INACTIVE"/>
-          <option id="JUMP_TO_TARGET" default="true"/>
-          <option id="TOGGLE_TO_COUNTER"/>
-          <option id="TOGGLE_INV_TO_COUNTER"/>
-        </logical>
-        <physical type="integer" interface="config" list="3" index="0x8A.0" size="0.2"/>
-      </parameter>
-      <parameter id="LONG_JT_OFF">
-        <logical type="option">
-          <option id="NO_JUMP_IGNORE_COMMAND"/>
-          <option id="ONDELAY"/>
-          <option id="ON"/>
-          <option id="OFFDELAY"/>
-          <option id="OFF" default="true"/>
-        </logical>
-        <physical type="integer" interface="config" list="3" index="0x8B.4" size="0x0.4"/>
-        <conversion type="option_integer">
-          <value_map device_value="0x00" parameter_value="0"/>
-          <value_map device_value="0x01" parameter_value="1"/>
-          <value_map device_value="0x03" parameter_value="2"/>
-          <value_map device_value="0x04" parameter_value="3"/>
-          <value_map device_value="0x06" parameter_value="4"/>
-        </conversion>
-      </parameter>
-      <parameter id="LONG_JT_ON">
-        <logical type="option">
-          <option id="NO_JUMP_IGNORE_COMMAND"/>
-          <option id="ONDELAY"/>
-          <option id="ON"/>
-          <option id="OFFDELAY"/>
-          <option id="OFF" default="true"/>
-        </logical>
-        <physical type="integer" interface="config" list="3" index="0x8B.0" size="0x0.4"/>
-        <conversion type="option_integer">
-          <value_map device_value="0x00" parameter_value="0"/>
-          <value_map device_value="0x01" parameter_value="1"/>
-          <value_map device_value="0x03" parameter_value="2"/>
-          <value_map device_value="0x04" parameter_value="3"/>
-          <value_map device_value="0x06" parameter_value="4"/>
-        </conversion>
-      </parameter>
-      <parameter id="LONG_JT_OFFDELAY">
-        <logical type="option">
-          <option id="NO_JUMP_IGNORE_COMMAND"/>
-          <option id="ONDELAY"/>
-          <option id="ON"/>
-          <option id="OFFDELAY"/>
-          <option id="OFF" default="true"/>
-        </logical>
-        <physical type="integer" interface="config" list="3" index="0x8C.4" size="0x0.4"/>
-        <conversion type="option_integer">
-          <value_map device_value="0x00" parameter_value="0"/>
-          <value_map device_value="0x01" parameter_value="1"/>
-          <value_map device_value="0x03" parameter_value="2"/>
-          <value_map device_value="0x04" parameter_value="3"/>
-          <value_map device_value="0x06" parameter_value="4"/>
-        </conversion>
-      </parameter>
-      <parameter id="LONG_JT_ONDELAY">
-        <logical type="option">
-          <option id="NO_JUMP_IGNORE_COMMAND"/>
-          <option id="ONDELAY"/>
-          <option id="ON"/>
-          <option id="OFFDELAY"/>
-          <option id="OFF" default="true"/>
-        </logical>
-        <physical type="integer" interface="config" list="3" index="0x8C.0" size="0x0.4"/>
-        <conversion type="option_integer">
-          <value_map device_value="0x00" parameter_value="0"/>
-          <value_map device_value="0x01" parameter_value="1"/>
-          <value_map device_value="0x03" parameter_value="2"/>
-          <value_map device_value="0x04" parameter_value="3"/>
-          <value_map device_value="0x06" parameter_value="4"/>
-        </conversion>
-      </parameter>
-      <default_values function="A">
-        <value id="LONG_JT_OFF" value="ONDELAY"/>
-        <value id="LONG_JT_OFFDELAY" value="ON"/>
-        <value id="LONG_JT_ON" value="ON"/>
-        <value id="LONG_JT_ONDELAY" value="ON"/>
-        <value id="SHORT_JT_OFF" value="ONDELAY"/>
-        <value id="SHORT_JT_OFFDELAY" value="ON"/>
-        <value id="SHORT_JT_ON" value="ON"/>
-        <value id="SHORT_JT_ONDELAY" value="ON"/>
-      </default_values>
-      <default_values function="B">
-        <value id="LONG_JT_ON" value="OFFDELAY"/>
-        <value id="SHORT_JT_ON" value="OFFDELAY"/>
-      </default_values>
-      <default_values function="AB">
-        <value id="LONG_JT_OFF" value="ONDELAY"/>
-        <value id="LONG_JT_ON" value="OFFDELAY"/>
-        <value id="LONG_JT_ONDELAY" value="ON"/>
-        <value id="SHORT_JT_OFF" value="ONDELAY"/>
-        <value id="SHORT_JT_ON" value="OFFDELAY"/>
-        <value id="SHORT_JT_ONDELAY" value="ON"/>
-      </default_values>
     </paramset>
   </paramset_defs>
 </device>
