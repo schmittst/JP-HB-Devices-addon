@@ -208,6 +208,7 @@ _Bitte etwas Geduld haben - je nach Geschwindigkeit der SD Karte kann die Instal
 |F3 60 | HB-EPTR-DPM |
 |F3 FE | HB-UNI-Sen-DUMMY-BEACON-V2 |
 |F3 FF | HB-UNI-Sen-DUMMY-BEACON |
+|F4 00 | [HB-REM-VIVALDI](https://github.com/schmittst/JP-HB-Devices-addon/tree/vivaldi-remote) |
 |_F5 01_ | _HB-LC-Sw2-FM_ |
 |_F5 02_ | _HB-LC-Sw1-FM_ |
 |_F5 11_ | _HB-LC-Dim5PWM-CV_ |
