@@ -1,3 +1,7 @@
+> **🔀 Fork-Hinweis** — Dies ist `schmittst/JP-HB-Devices-addon`, ein Fork von [`jp112sdl/JP-HB-Devices-addon`](https://github.com/jp112sdl/JP-HB-Devices-addon). Branch `master` ist ein sauberer Upstream-Mirror; die Fork-spezifischen Erweiterungen (Custom-Device **`HB-REM-VIVALDI`** für eine La-Spaziale-Vivaldi-II-Espressomaschine) liegen ausschließlich auf dem Branch [`vivaldi-remote`](../../tree/vivaldi-remote). Details siehe [`FORK.md`](FORK.md).
+
+---
+
 # JP-HB-Devices-addon [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/) <br/>[![Github All Releases](https://img.shields.io/github/downloads/jp112sdl/JP-HB-Devices-addon/total.svg)](https://github.com/jp112sdl/JP-HB-Devices-addon/releases) [![GitHub issues](https://img.shields.io/github/issues/jp112sdl/JP-HB-Devices-addon.svg)](https://github.com/jp112sdl/JP-HB-Devices-addon/issues) [![Patch-Apply OpenCCU Snapshot](https://github.com/jp112sdl/JP-HB-Devices-addon/actions/workflows/test-openccu-snapshot.yml/badge.svg?branch=master)](https://github.com/jp112sdl/JP-HB-Devices-addon/actions/workflows/test-openccu-snapshot.yml) <a href='https://ko-fi.com/N4N21R89O' target='_blank'><img height='20' style='border:0px;height:20px;' src='https://cdn.ko-fi.com/cdn/kofi1.png?v=2' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
 **✅ lauffähig unter CCU / RaspberryMatic / OpenCCU Firmware 3.47.10 - 3.83.6**<br/>
