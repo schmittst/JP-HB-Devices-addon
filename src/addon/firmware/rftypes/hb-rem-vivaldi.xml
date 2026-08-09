@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
   HB-REM-VIVALDI — Steven Schmitt's La Spaziale Vivaldi II Espresso-Remote.
 
@@ -8,23 +8,25 @@
   (aus der LED gelesen); ein SET vom CCU löst genau einen Taster-Puls aus.
 
   Peering ist deaktiviert (Firmware: PEERS_PER_CHANNEL=0). Bedienung
-  ausschließlich via CCU-WebUI/Programme. -->
+  ausschließlich via CCU-WebUI/Programme.
+
+  XML-FW-Abgleich 2026-08-09 (Audit XF-01..XF-11): Alle Deklarationen ohne
+  Firmware-Gegenstück entfernt — ON_TIME (FW ignorierte die Einschaltdauer:
+  Maschine wäre nie ausgegangen), INSTALL_TEST (Zuordnungstest = realer
+  Tasterpuls an der Maschine), TRANSMIT_DEV_TRY_MAX + INTERNAL_KEYS_VISIBLE
+  (Legacy-List0 der FW kennt die Register nicht bzw. niemand liest sie),
+  STATUSINFO_MINDELAY/RANDOM (kein FW-Konsument, Status kommt designbedingt
+  sofort), INFO_POWERON (FW sendet nie Kanal 0), updatable=false (kein
+  OTA-Bootloader auf STM32). cyclic_timeout=3600 bleibt — FW ab V1.1 bedient
+  es mit einem 600-s-Heartbeat (bis zum V1.1-Flash läuft auf dem Board V1.0,
+  die UNREACH-Meldungen enden erst mit dem Flash, nicht mit diesem XML). -->
 <device version="1" cyclic_timeout="3600" supports_aes="false">
   <supported_types>
-    <type name="HB-REM-VIVALDI" id="HB-REM-VIVALDI" priority="2" updatable="true">
+    <type name="HB-REM-VIVALDI" id="HB-REM-VIVALDI" priority="2" updatable="false">
       <parameter index="10.0" size="2.0" const_value="0xF400" />
     </type>
   </supported_types>
-  <paramset type="MASTER" id="hb_rem_vivaldi_dev_master">
-    <parameter id="INTERNAL_KEYS_VISIBLE" ui_flags="internal">
-      <logical type="boolean" default="true"/>
-      <physical type="integer" interface="config" list="0" index="2.7" size="0.1"/>
-    </parameter>
-    <parameter id="TRANSMIT_DEV_TRY_MAX">
-      <logical type="integer" min="1.0" max="10.0" default="6.0"/>
-      <physical type="integer" interface="config" list="0" index="20" size="1"/>
-    </parameter>
-  </paramset>
+  <paramset type="MASTER" id="hb_rem_vivaldi_dev_master" />
   <channels>
     <channel index="0" type="MAINTENANCE" ui_flags="internal" class="maintenance" count="1">
       <paramset type="MASTER" id="maint_ch_master" />
@@ -90,7 +92,6 @@
     <frame id="LEVEL_SET" direction="to_device" type="0x11" subtype="0x02" subtype_index="9" channel_field="10">
       <parameter type="integer" index="11.0" size="1.0" param="STATE"/>
       <parameter type="integer" index="12.0" size="2.0" const_value="0"/>
-      <parameter type="integer" index="14.0" size="2.0" PARAM="ON_TIME" omit_if="0"/>
     </frame>
     <frame id="LEVEL_GET" direction="to_device" type="0x01" channel_field="9">
       <parameter type="integer" index="10.0" size="1.0" const_value="14"/>
@@ -103,15 +104,6 @@
       <parameter type="integer" index="11.0" size="1.0" param="STATE"/>
       <parameter type="integer" index="12.4" size="0.3" param="STATE_FLAGS"/>
     </frame>
-    <frame id="TOGGLE_INSTALL_TEST" direction="to_device" type="0x11" subtype="0x02" subtype_index="9" channel_field="10">
-      <parameter type="integer" index="11.0" size="1.0" param="TOGGLE_FLAG"/>
-      <parameter type="integer" index="12.0" size="2.0" const_value="0"/>
-    </frame>
-    <frame id="INFO_POWERON" direction="from_device" allowed_receivers="CENTRAL" event="true" type="0x10" subtype="6" subtype_index="9" fixed_channel="*">
-      <parameter type="integer" index="10.0" size="1.0" const_value="0"/>
-      <parameter type="integer" const_value="0" param="STATE"/>
-      <parameter type="integer" const_value="0" param="STATE_FLAGS"/>
-    </frame>
   </frames>
 
   <paramset_defs>
@@ -123,16 +115,8 @@
           <get request="LEVEL_GET" response="INFO_LEVEL" process_as_event="true"/>
           <event frame="INFO_LEVEL" auth_violate_policy="get"/>
           <event frame="ACK_STATUS" auth_violate_policy="get"/>
-          <event frame="INFO_POWERON" auth_violate_policy="get"/>
-          <reset_after_send param="ON_TIME"/>
         </physical>
         <conversion type="boolean_integer" threshold="1" false="0" true="200"/>
-      </parameter>
-      <parameter id="ON_TIME" operations="write" control="NONE">
-        <logical type="float" min="0.0" max="85825945.6" default="0.0" unit="s"/>
-        <physical type="integer" interface="store" id="ON_TIME" volatile="true"/>
-        <conversion type="float_integer_scale" factor="10"/>
-        <conversion type="integer_tinyfloat" mantissa_start="5" mantissa_size="11" exponent_start="0" exponent_size="5"/>
       </parameter>
       <parameter id="WORKING" operations="read,event" ui_flags="internal">
         <logical type="boolean" default="false"/>
@@ -140,16 +124,8 @@
           <get request="LEVEL_GET" response="INFO_LEVEL" process_as_event="true"/>
           <event frame="INFO_LEVEL"/>
           <event frame="ACK_STATUS"/>
-          <event frame="INFO_POWERON"/>
         </physical>
         <conversion type="boolean_integer"/>
-      </parameter>
-      <parameter id="INSTALL_TEST" operations="write" ui_flags="internal">
-        <logical type="action"/>
-        <physical type="integer" interface="command" value_id="TOGGLE_FLAG" no_init="true">
-          <set request="TOGGLE_INSTALL_TEST"/>
-        </physical>
-        <conversion type="toggle" value="STATE"/>
       </parameter>
     </paramset>
 
@@ -157,18 +133,6 @@
       <parameter id="AES_ACTIVE" ui_flags="internal">
         <logical type="boolean" default="false"/>
         <physical type="boolean" interface="internal" value_id="AES"/>
-      </parameter>
-      <parameter id="STATUSINFO_MINDELAY" operations="read,write">
-        <logical type="float" min="0.5" max="15.5" default="2.0" unit="s">
-          <special_value id="NOT_USED" value="0.0"/>
-        </logical>
-        <physical type="integer" interface="config" list="1" index="87.0" size="0.5"/>
-        <conversion type="float_integer_scale" factor="2"/>
-      </parameter>
-      <parameter id="STATUSINFO_RANDOM" operations="read,write">
-        <logical type="float" min="0.0" max="7.0" default="1.0" unit="s"/>
-        <physical type="integer" interface="config" list="1" index="87.5" size="0.3"/>
-        <conversion type="float_integer_scale" factor="1"/>
       </parameter>
     </paramset>
   </paramset_defs>

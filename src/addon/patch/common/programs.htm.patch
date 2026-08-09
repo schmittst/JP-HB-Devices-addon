@@ -44,16 +44,16 @@
  
    // Heating thermostate
    SetPartyMode = function(elm) {
-@@ -154,6 +191,9 @@
+@@ -153,6 +190,9 @@
+         break;
        case "ACOUSTIC_DIS-EP":
          elm = jQuery("#ePaperAcousticDisplay" + regaDialogID);
-         break;
++        break;
 +      case "DIS-EP42BW":
 +        elm = jQuery("#setHbStatusDisplayEPaper" + regaDialogID);
-+        break;
+         break;
      }
  
-     jQuery(elm).prop("disabled", true);
 @@ -192,6 +232,19 @@
              inputElm.change();
            }

@@ -833,10 +833,11 @@
        jQuery("#placeHolder_"+line).hide().css("display", "none");
      }
    }
-@@ -23560,6 +24352,24 @@
+@@ -23559,6 +24351,24 @@
+         this.addToPostBody( 'string type = "'+this.type+'";' );
          this.setWidth(400);
          this.setFile( "/pages/msg/setOUCFMMode.htm" );
-         break;
++        break;
 +        case ID_SET_HBOUCFM_MODE:
 +        this.setTitle( translateKey("dialogEnterValue") /*"Wert eingeben" */);
 +        this.addToPostBody( 'string type = "'+this.type+'";' );
@@ -854,10 +855,9 @@
 +        this.addToPostBody( 'string type = "'+this.type+'";' );
 +        this.setWidth(480);
 +        this.setFile( "/pages/msg/setHBOURGBWLEDFXMode.htm" );
-+        break;
+         break;
          case ID_SET_STATUS_DISPLAY:
          this.setTitle( translateKey("dialogEnterValue") /*"Wert eingeben" */);
-         this.addToPostBody( 'string type = "'+this.type+'";' );
 @@ -24363,6 +25173,9 @@
  ID_AUTO_LOGIN_CONFIG     = 1018;
  ID_PROGRAM_CHOOSER       = 1019;

@@ -1,15 +1,18 @@
 --- ./patchsource/www/rega/esp/functions.fn.orig
 +++ ./patchsource/www/rega/esp/functions.fn
-@@ -326,6 +326,18 @@
-     bShowChannel = false;
-   }
+@@ -323,9 +323,21 @@
  
-+  ! HB Status Display EPaper 42BW
-+  if(( (oDevHssType == "HB-DIS-EP-42BW") || (oDevHssType == "HB-DIS-EP-42BW-MAINS") ) && (chNumber == 11)) {
-+    ! Hide channel 11 of this device
+   if((chn.HssType().Find("SWITCH_TRANSMIT") != -1) && (chn.HssType().Find("SWITCH_TRANSMITTER") == -1)) {
+     ! channel 7 of the ThermalControl-IndoorTemperatureSensor (e. g. HM-TC-IT-WM-W-EU)
 +    bShowChannel = false;
 +  }
 +
++  ! HB Status Display EPaper 42BW
++  if(( (oDevHssType == "HB-DIS-EP-42BW") || (oDevHssType == "HB-DIS-EP-42BW-MAINS") ) && (chNumber == 11)) {
++    ! Hide channel 11 of this device
+     bShowChannel = false;
+   }
+ 
 +  ! HB Status Display EPaper 75BW
 +  if(( (oDevHssType == "HB-DIS-EP-75BW") || (oDevHssType == "HB-DIS-EP-75BW-MAINS") ) && (chNumber == 9)) {
 +    ! Hide channel 9 of this device

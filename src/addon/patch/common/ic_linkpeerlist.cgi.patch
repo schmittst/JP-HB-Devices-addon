@@ -1,9 +1,11 @@
 --- ./patchsource/www/config/ic_linkpeerlist.cgi.orig
 +++ ./patchsource/www/config/ic_linkpeerlist.cgi
-@@ -319,6 +319,28 @@
+@@ -317,6 +317,28 @@
+           if {([string index $senderParent 0] != "@")  && ([string index $receiverParent 0] != "@") && ![isInExceptionList $sender_descr(TYPE) $receiver_descr(TYPE)]} {
+             set internalLink 1
              set hideBtnDelete 1
-           }
-         }
++          }
++        }
 +        catch {
 +          set devType $sender_descr(PARENT_TYPE)
 +          if { 
@@ -24,8 +26,6 @@
 +              set internalLink  0
 +            }
 +            set hideBtnDelete 0
-+          }
-+        }
+           }
+         }
        }
- 
-       catch {set isHMW [isWired $link(SENDER_DESCRIPTION) $link(RECEIVER_DESCRIPTION)]}

@@ -1,9 +1,18 @@
 --- ./patchsource/www/rega/esp/channels.fn.orig
 +++ ./patchsource/www/rega/esp/channels.fn
-@@ -761,6 +761,54 @@
- }
- 
- ! [chnId]
+@@ -752,6 +752,38 @@
+   {
+     object oOL = chn.DPByControl("DIMMER.OLD_LEVEL");
+     object oL = chn.DPByControl("DIMMER.LEVEL");
++    if( oL && oOL )
++    {
++      oOL.State(1);
++    }
++  }
++  return;
++}
++
++! [chnId]
 +function ::servoOldVal()
 +{
 +  object chn = dom.GetObject( system.GetVar("chnId") );
@@ -27,15 +36,13 @@
 +  {
 +    object oOL = chn.DPByControl("FAN.OLD_LEVEL");
 +    object oL = chn.DPByControl("FAN.LEVEL");
-+    if( oL && oOL )
-+    {
-+      oOL.State(1);
-+    }
-+  }
-+  return;
-+}
-+
-+! [chnId]
+     if( oL && oOL )
+     {
+       oOL.State(1);
+@@ -761,6 +793,22 @@
+ }
+ 
+ ! [chnId]
 +function ::airflapOldVal()
 +{
 +  object chn = dom.GetObject( system.GetVar("chnId") );
